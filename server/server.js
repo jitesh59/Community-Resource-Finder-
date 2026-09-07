@@ -8,6 +8,7 @@ import chatRoutes from './routes/chatRoutes.js';
 import resourceRoutes from './routes/resourceRoutes.js';
 import historyRoutes from './routes/historyRoutes.js';
 import authRoutes from './routes/authRoutes.js';
+import locationRoutes from './routes/locationRoutes.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
@@ -36,6 +37,7 @@ app.get('/health', (_req, res) => {
 
 app.use('/api/chat', chatRoutes);
 app.use('/api/resources', resourceRoutes);
+app.use('/api/locations', locationRoutes);
 app.use('/api/history', historyRoutes);
 app.use('/api/auth', authRoutes);
 app.use(errorHandler);

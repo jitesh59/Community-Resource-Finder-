@@ -62,22 +62,72 @@ export async function registerUser({ name, email, password }) {
   return data;
 }
 
-// ─── App endpoints ────────────────────────────────────────────────────────────
-export function sendChat(message, city, location) {
+// ─── Location endpoints ───────────────────────────────────────────────────────
+export function fetchStates() {
+  return request('/api/locations/states');
+}
+
+export function fetchDistricts(state) {
+  if (!state || state === 'All') return Promise.resolve({ districts: [] });
+  return request(`/api/locations/districts?state=${encodeURIComponent(state)}`);
+}
+
+export function fetchPincodeInfo(pincode) {
+  return request(`/api/locations/pincode/${encodeURIComponent(pincode)}`);
+}
+
+// ─── App & Resource endpoints ─────────────────────────────────────────────────
+export function sendChat(message, locationParams = {}, locationCoords = null) {
   return request('/api/chat', {
     method: 'POST',
-    body: JSON.stringify({ message, city, location })
+    body: JSON.stringify({
+      message,
+      state: locationParams.state || 'All',
+      district: locationParams.district || 'All',
+      city: locationParams.city || 'All',
+      pincode: locationParams.pincode || '',
+      location: locationCoords
+    })
   });
 }
 
 export function fetchResources(filters = {}) {
-  const params = new URLSearchParams(
-    Object.entries(filters).filter(([key, value]) => value && !(key === 'city' && value === 'All'))
+  const cleanFilters = Object.fromEntries(
+    Object.entries(filters).filter(([_, value]) => value !== undefined && value !== null && value !== '' && value !== 'All')
   );
+  const params = new URLSearchParams(cleanFilters);
   const query = params.toString();
   return request(`/api/resources${query ? '?' + query : ''}`);
 }
 
 export function fetchHistory() {
   return request('/api/history');
+}
+
+// ─── Admin Resource Management CRUD ───────────────────────────────────────────
+export function createResource(data) {
+  return request('/api/resources', {
+    method: 'POST',
+    body: JSON.stringify(data)
+  });
+}
+
+export function updateResource(id, data) {
+  return request(`/api/resources/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(data)
+  });
+}
+
+export function deleteResource(id) {
+  return request(`/api/resources/${id}`, {
+    method: 'DELETE'
+  });
+}
+
+export function verifyResource(id, status = 'Verified') {
+  return request(`/api/resources/${id}/verify`, {
+    method: 'PATCH',
+    body: JSON.stringify({ status })
+  });
 }
