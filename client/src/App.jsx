@@ -11,12 +11,12 @@ import ResourceGrid from './components/ResourceGrid.jsx';
 import Sidebar from './components/Sidebar.jsx';
 import StatCard from './components/StatCard.jsx';
 
-const cities = ['All', 'LPU Campus', 'Phagwara', 'Jalandhar', 'Ludhiana'];
+const cities = ['All', 'Delhi NCR', 'Mumbai', 'Bengaluru', 'Chennai', 'Kolkata', 'Hyderabad', 'Pune', 'Chandigarh', 'Ludhiana', 'Phagwara'];
 const suggestions = [
-  'Nearest emergency hospital near LPU',
-  'Show 24/7 pharmacies in Jalandhar',
-  'Police help near Phagwara',
-  'Best rated banks in Ludhiana'
+  'Nearest emergency hospital in Delhi',
+  'Show 24/7 pharmacies in Mumbai',
+  'Police help near Bengaluru',
+  'Best rated banks in Hyderabad'
 ];
 
 export default function App() {
@@ -114,7 +114,7 @@ export default function App() {
                   AI-Powered Community Resource Finder
                 </div>
                 <h1 className="mt-1 text-2xl font-bold tracking-tight">
-                  <span className="gradient-text">PunjabFind</span>
+                  <span className="gradient-text">IndiaFind</span>
                   <span className="text-white"> AI</span>
                 </h1>
               </div>

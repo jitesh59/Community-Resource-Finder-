@@ -2,7 +2,7 @@
   "name": "ai-community-resource-finder",
   "version": "1.0.0",
   "private": true,
-  "description": "AI-powered community resource finder SaaS for Punjab, India.",
+  "description": "AI-powered community resource finder SaaS for India.",
   "scripts": {
     "dev": "concurrently \"npm run dev --workspace server\" \"npm run dev --workspace client\"",
     "install:all": "npm install --workspaces",

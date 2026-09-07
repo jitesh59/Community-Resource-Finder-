@@ -10,12 +10,12 @@ export default function Sidebar({ cities, city, setCity, suggestions, onSuggesti
         <div className="flex items-center gap-3">
           <div className="relative flex h-10 w-10 items-center justify-center rounded-xl font-bold text-white text-sm shadow-glow overflow-hidden"
             style={{ background: 'linear-gradient(135deg, #4f46e5, #7c3aed)' }}>
-            <span className="relative z-10">PF</span>
+            <span className="relative z-10">IF</span>
             <div className="absolute inset-0 opacity-40"
               style={{ background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.4), transparent 70%)' }} />
           </div>
           <div>
-            <div className="font-bold text-white tracking-tight">PunjabFind</div>
+            <div className="font-bold text-white tracking-tight">IndiaFind</div>
             <div className="text-[10px] font-medium tracking-widest uppercase"
               style={{ color: 'rgba(165,180,252,0.6)' }}>AI Console</div>
           </div>

@@ -1,6 +1,6 @@
 # AI-Powered Community Resource Finder
 
-Production-ready SaaS architecture for a Punjab, India community resource discovery assistant.
+Production-ready SaaS architecture for an All-India community resource discovery assistant.
 
 ## Stack
 

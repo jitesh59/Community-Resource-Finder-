@@ -19,11 +19,11 @@ async function createTextResponse(input) {
 
 function fallbackIntent(message) {
   const text = message.toLowerCase();
-  const domainWords = ['hospital', 'doctor', 'police', 'atm', 'bank', 'pharmacy', 'medicine', 'college', 'school', 'fire', 'mall', 'park', 'lpu', 'phagwara', 'jalandhar', 'ludhiana'];
+  const domainWords = ['hospital', 'doctor', 'police', 'atm', 'bank', 'pharmacy', 'medicine', 'college', 'school', 'fire', 'mall', 'park', 'delhi', 'mumbai', 'bengaluru', 'bangalore', 'chennai', 'kolkata', 'hyderabad', 'pune', 'ahmedabad', 'jaipur', 'chandigarh', 'ludhiana', 'phagwara', 'jalandhar', 'lpu', 'india'];
   const categories = ['hospitals', 'police', 'atms', 'banks', 'pharmacies', 'education', 'fire', 'parks'].filter((word) =>
     text.includes(word.slice(0, -1)) || text.includes(word)
   );
-  const city = ['LPU Campus', 'Phagwara', 'Jalandhar', 'Ludhiana'].find((candidate) => text.includes(candidate.toLowerCase())) || null;
+  const city = ['Delhi NCR', 'Delhi', 'Mumbai', 'Bengaluru', 'Bangalore', 'Chennai', 'Kolkata', 'Hyderabad', 'Pune', 'Ahmedabad', 'Jaipur', 'Chandigarh', 'LPU Campus', 'Phagwara', 'Jalandhar', 'Ludhiana'].find((candidate) => text.includes(candidate.toLowerCase())) || null;
   return {
     inDomain: domainWords.some((word) => text.includes(word)),
     intent: text.includes('near') ? 'nearby_resource_search' : 'resource_search',
@@ -45,7 +45,7 @@ export async function detectIntent(message, history) {
 
 export async function generateAnswer({ message, intent, resources, history }) {
   if (!intent.inDomain) {
-    return 'I can help with local community resources in Punjab such as hospitals, police, pharmacies, ATMs, banks, education, fire services, malls, and parks. Please ask about one of those.';
+    return 'I can help with local community resources across India such as hospitals, police stations, pharmacies, ATMs, banks, educational institutions, fire services, malls, and parks. Please ask about one of those.';
   }
 
   try {

@@ -26,8 +26,12 @@ export async function loadResources() {
 export async function getResources(filters = {}) {
   const { city = 'All', categoryId, emergency } = filters;
   const resources = await loadResources();
+  const targetCity = city.toLowerCase();
   return resources.filter((resource) => {
-    if (city !== 'All' && resource.city !== city) return false;
+    if (city !== 'All') {
+      const resCity = resource.city.toLowerCase();
+      if (resCity !== targetCity && !resCity.includes(targetCity) && !targetCity.includes(resCity)) return false;
+    }
     if (categoryId && resource.categoryId !== categoryId) return false;
     if (typeof emergency === 'boolean' && resource.emergency !== emergency) return false;
     return true;
@@ -56,7 +60,8 @@ export function matchResources(resources, intent, origin) {
       const haystack = `${resource.name} ${resource.addr} ${resource.city} ${resource.category} ${resource.categoryId}`.toLowerCase();
       const lexicalScore = terms.reduce((score, term) => score + (haystack.includes(String(term).toLowerCase()) ? 1 : 0), 0);
       const emergencyBoost = intent.urgency === 'emergency' && resource.emergency ? 3 : 0;
-      const cityBoost = intent.city && resource.city.toLowerCase() === intent.city.toLowerCase() ? 2 : 0;
+      const cityMatch = intent.city && (resource.city.toLowerCase().includes(intent.city.toLowerCase()) || intent.city.toLowerCase().includes(resource.city.toLowerCase()));
+      const cityBoost = cityMatch ? 3 : 0;
       const distance = haversineDistance(origin, resource);
       return { ...resource, distanceKm: distance, score: lexicalScore + emergencyBoost + cityBoost + resource.rating / 10 };
     })

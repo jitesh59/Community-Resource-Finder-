@@ -61,13 +61,13 @@ export default function AuthPage({ onAuth }) {
           <div className="inline-flex items-center justify-center gap-3 mb-4">
             <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl font-bold text-white text-lg shadow-glow overflow-hidden"
               style={{ background: 'linear-gradient(135deg, #4f46e5, #7c3aed)' }}>
-              <span className="relative z-10">PF</span>
+              <span className="relative z-10">IF</span>
               <div className="absolute inset-0 opacity-30"
                 style={{ background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.5), transparent 70%)' }} />
             </div>
             <div className="text-left">
               <div className="text-2xl font-bold">
-                <span className="gradient-text">PunjabFind</span>
+                <span className="gradient-text">IndiaFind</span>
                 <span className="text-white"> AI</span>
               </div>
               <div className="text-[11px] font-semibold tracking-widest uppercase"
@@ -78,7 +78,7 @@ export default function AuthPage({ onAuth }) {
           <div className="flex items-center justify-center gap-1.5 text-xs font-semibold tracking-widest uppercase mb-1"
             style={{ color: '#818cf8' }}>
             <Sparkles className="h-3 w-3" />
-            AI-Powered · Punjab, India
+            AI-Powered · India
           </div>
         </div>
 
@@ -238,7 +238,7 @@ export default function AuthPage({ onAuth }) {
         <div className="mt-6 flex items-center justify-center gap-2 text-xs"
           style={{ color: 'rgba(100,116,139,0.6)' }}>
           <Bot className="h-3.5 w-3.5" />
-          Powered by OpenAI · Secure · Punjab Community Resources
+          Powered by OpenAI · Secure · All India Community Resources
         </div>
       </div>
     </div>
