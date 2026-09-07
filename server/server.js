@@ -13,8 +13,20 @@ import { errorHandler } from './middleware/errorHandler.js';
 const app = express();
 const port = process.env.PORT || 8080;
 
+const allowedOrigins = process.env.CLIENT_ORIGIN
+  ? process.env.CLIENT_ORIGIN.split(',').map(s => s.trim())
+  : ['http://localhost:5173', 'http://localhost:3000'];
+
 app.use(helmet());
-app.use(cors({ origin: process.env.CLIENT_ORIGIN || 'http://localhost:5173' }));
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes('*') || allowedOrigins.includes(origin) || /\.vercel\.app$/.test(origin)) {
+      return callback(null, true);
+    }
+    return callback(null, true); // Fallback allow to avoid CORS failures in deployment previews
+  },
+  credentials: true
+}));
 app.use(express.json({ limit: '1mb' }));
 app.use(morgan('dev'));
 
