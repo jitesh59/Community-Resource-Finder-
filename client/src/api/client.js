@@ -1,6 +1,10 @@
-// In dev, use a relative URL so Vite's built-in proxy forwards /api/* to the backend.
-// In production, set VITE_API_URL to the absolute backend URL (e.g., https://api.example.com).
-const API_URL = import.meta.env.VITE_API_URL ?? '';
+// In dev, Vite proxies /api/* to http://localhost:8080.
+// In production on Vercel, VITE_API_URL should be set to your Render backend (e.g. https://community-resource-finder-api.onrender.com).
+let rawApiUrl = (import.meta.env.VITE_API_URL || '').trim();
+if (rawApiUrl.endsWith('/')) {
+  rawApiUrl = rawApiUrl.slice(0, -1);
+}
+const API_URL = rawApiUrl;
 
 // ─── Session ID ───────────────────────────────────────────────────────────────
 function getSessionId() {
@@ -26,21 +30,31 @@ export function setStoredUser(user) {
 
 // ─── Base request ─────────────────────────────────────────────────────────────
 async function request(path, options = {}) {
-  const response = await fetch(`${API_URL}${path}`, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      'x-session-id': getSessionId(),
-      ...(options.headers || {})
+  const targetUrl = `${API_URL}${path}`;
+  try {
+    const response = await fetch(targetUrl, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        'x-session-id': getSessionId(),
+        ...(options.headers || {})
+      }
+    });
+
+    if (!response.ok) {
+      const payload = await response.json().catch(() => ({}));
+      throw new Error(payload.error || payload.message || `Server returned HTTP status ${response.status}`);
     }
-  });
 
-  if (!response.ok) {
-    const payload = await response.json().catch(() => ({}));
-    throw new Error(payload.error || 'Request failed');
+    return await response.json();
+  } catch (err) {
+    if (err.message.includes('Failed to fetch')) {
+      throw new Error(
+        `Unable to reach backend API at ${targetUrl || 'local server'}. Please verify backend server status or VITE_API_URL environment variable.`
+      );
+    }
+    throw err;
   }
-
-  return response.json();
 }
 
 // ─── Auth endpoints ───────────────────────────────────────────────────────────

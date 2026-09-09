@@ -14,25 +14,35 @@ import { errorHandler } from './middleware/errorHandler.js';
 const app = express();
 const port = process.env.PORT || 8080;
 
-const allowedOrigins = process.env.CLIENT_ORIGIN
-  ? process.env.CLIENT_ORIGIN.split(',').map(s => s.trim())
-  : ['http://localhost:5173', 'http://localhost:3000'];
+// Configure Helmet with relaxed cross-origin policies for API deployment
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+    crossOriginOpenerPolicy: false
+  })
+);
 
-app.use(helmet());
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes('*') || allowedOrigins.includes(origin) || /\.vercel\.app$/.test(origin)) {
-      return callback(null, true);
-    }
-    return callback(null, true); // Fallback allow to avoid CORS failures in deployment previews
-  },
-  credentials: true
-}));
+// Bulletproof CORS setup for cross-domain API calls (Vercel <-> Render)
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'x-session-id', 'Authorization']
+  })
+);
+
 app.use(express.json({ limit: '1mb' }));
 app.use(morgan('dev'));
 
-app.get('/health', (_req, res) => {
-  res.json({ ok: true, service: 'community-resource-finder-api' });
+// Health check endpoints for Render / Uptime monitors
+app.get(['/', '/health', '/api/health'], (_req, res) => {
+  res.json({
+    ok: true,
+    service: 'community-resource-finder-api',
+    status: 'Operational',
+    timestamp: new Date().toISOString()
+  });
 });
 
 app.use('/api/chat', chatRoutes);
@@ -48,7 +58,7 @@ const server = app.listen(port, () => {
 
 server.on('error', (error) => {
   if (error.code === 'EADDRINUSE') {
-    console.error(`Port ${port} is already in use. Stop the existing backend process or set a different PORT in server/.env.`);
+    console.error(`Port ${port} is already in use.`);
     process.exit(1);
   }
   console.error(error);
