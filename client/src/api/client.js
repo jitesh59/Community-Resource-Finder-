@@ -1,5 +1,5 @@
 // In dev, Vite proxies /api/* to http://localhost:8080.
-// In production on Vercel, VITE_API_URL should be set to your Render backend (e.g. https://community-resource-finder-api.onrender.com).
+// In production on Vercel, VITE_API_URL should be set to your Render backend URL.
 let rawApiUrl = (import.meta.env.VITE_API_URL || '').trim();
 if (rawApiUrl.endsWith('/')) {
   rawApiUrl = rawApiUrl.slice(0, -1);
@@ -30,6 +30,16 @@ export function setStoredUser(user) {
 
 // ─── Base request ─────────────────────────────────────────────────────────────
 async function request(path, options = {}) {
+  const isProductionDomain = typeof window !== 'undefined' &&
+    window.location.hostname !== 'localhost' &&
+    window.location.hostname !== '127.0.0.1';
+
+  if (isProductionDomain && (!API_URL || API_URL.includes('localhost'))) {
+    throw new Error(
+      `Your live site is trying to connect to localhost instead of your live Render backend. Please add VITE_API_URL = "https://your-render-url.onrender.com" in Vercel Environment Variables and click Redeploy.`
+    );
+  }
+
   const targetUrl = `${API_URL}${path}`;
   try {
     const response = await fetch(targetUrl, {
@@ -50,7 +60,7 @@ async function request(path, options = {}) {
   } catch (err) {
     if (err.message.includes('Failed to fetch')) {
       throw new Error(
-        `Unable to reach backend API at ${targetUrl || 'local server'}. Please verify backend server status or VITE_API_URL environment variable.`
+        `Unable to reach live backend at ${targetUrl}. Please verify VITE_API_URL in Vercel Settings and Redeploy.`
       );
     }
     throw err;
